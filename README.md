@@ -7,7 +7,7 @@ my-receipt-app/
 │   ├── src/  
 │   ├── Dockerfile  
 │   └── package.json  
-├── database/          # Database (SQLite)  
+├── database/          # Database (PostgreSQL to run in container)  
 │   ├── Dockerfile  
 ├── docker-compose.yml # Docker Compose for orchestration  
 ├── .github/  
