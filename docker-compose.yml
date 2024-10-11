@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: "postgresql://admin:adminpassword@database:5432/receipts"
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    container_name: angular-frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - app-network
+
+  database:
+    build: ./database
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: receipts
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
