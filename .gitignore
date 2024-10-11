@@ -3,4 +3,4 @@
 *.pem
 
 # local env files
-backend/venv/
+backend/.venv/
