@@ -5,3 +5,4 @@
 # local env files
 backend/.venv/
 backend/__pycache__/
+__pycache__
