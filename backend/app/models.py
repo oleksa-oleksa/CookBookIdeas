@@ -1,18 +1,16 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Text, ARRAY
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String, Date, Text
+from sqlalchemy.dialects.postgresql import ARRAY
+from app.database import Base
 
 class Receipt(Base):
     __tablename__ = "receipts"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    photo_url = Column(String, nullable=True)
-    ingredients = Column(ARRAY(String), nullable=False)  # List of ingredients
-    preparation_steps = Column(Text, nullable=False)
-    tags = Column(ARRAY(String), nullable=True)  # List of tags (e.g., "meat", "veggie")
-    date_added = Column(DateTime, default=datetime.utcnow)  # Auto set when added
-    date_cooked = Column(DateTime, nullable=True)
-    rating = Column(Float, nullable=True)  # Rating out of 5
+    title = Column(String, index=True)
+    photo = Column(String, nullable=True)
+    ingredients = Column(ARRAY(String))
+    preparation_steps = Column(Text)
+    tags = Column(ARRAY(String))
+    date_added = Column(Date)
+    date_cooked = Column(Date, nullable=True)
+    rating = Column(Integer, nullable=True)
