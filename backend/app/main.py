@@ -2,7 +2,7 @@ from typing import List
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import models, database, schemas
-from app.schemas import ReceiptCreate  # Explicitly import ReceiptCreate
+from app.schemas import ReceiptCreate
 from app.models import Receipt
 from app.database import get_db
 from datetime import datetime
@@ -23,6 +23,7 @@ def get_db():
 @app.post("/receipts/")
 def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
     # Create an instance of the SQLAlchemy model
+    # ReceiptCreate for data input validation when creating new receipts (via POST).
     db_receipt = models.Receipt(
         title=receipt.title,
         photo_url=receipt.photo_url,
@@ -50,10 +51,18 @@ def read_receipts(skip: int = 0, limit: int = 10, db: Session = Depends(database
 
 @app.put("/receipts/{receipt_id}/cooked")
 def mark_as_cooked(receipt_id: int, db: Session = Depends(get_db)):
-    receipt = db.query(Receipt).filter(Receipt.id == receipt_id).first()
+    # Query the receipt from the database
+    receipt = db.query(models.Receipt).filter(models.Receipt.id == receipt_id).first()
+    
+    # If receipt is not found, raise an HTTP 404 error
     if receipt is None:
         raise HTTPException(status_code=404, detail="Receipt not found")
-    receipt.date_cooked = datetime.utcnow()
+    
+    # Set the current date and time for 'date_cooked'
+    receipt.date_cooked = datetime.now()
+    
+    # Commit the changes to the database and refresh the receipt
     db.commit()
     db.refresh(receipt)
+    
     return receipt

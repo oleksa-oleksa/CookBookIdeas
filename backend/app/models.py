@@ -3,6 +3,10 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from app.database import Base
 
 class Receipt(Base):
+    """
+    SQLAlchemy Receipt: This represents the structure of the data in your database.
+    It defines the receipts table with columns like id, title, ingredients, etc.
+    """
     __tablename__ = "receipts"
 
     id = Column(Integer, primary_key=True, index=True)

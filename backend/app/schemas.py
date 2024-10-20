@@ -8,6 +8,14 @@ class Receipt(BaseModel):
     (e.g., in a GET request). It can include fields that should be 
     returned to the client, like id, which might not be part of the request
     when creating the receipt but should be included when retrieving it.
+
+    Pydantic Receipt: This represents the structure of the data
+    that gets sent or received via the API. It is often used to ensure
+    that the API receives valid input and returns correctly structured output.
+
+    Pydantic model in schemas.py for data output serialization (returning data to the client).
+    This Pydantic model is separate from the SQLAlchemy Receipt model
+    because the output response model may differ slightly from how the data is stored.
     """
     id: int
     title: str
