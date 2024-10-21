@@ -9,7 +9,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-# Create the database tables
+# Create the database tables when the application starts if they don't exist.
 models.Base.metadata.create_all(bind=database.engine)
 
 # Dependency to get the database session
@@ -22,8 +22,34 @@ def get_db():
 
 @app.post("/receipts/")
 def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
-    # Create an instance of the SQLAlchemy model
-    # ReceiptCreate for data input validation when creating new receipts (via POST).
+    """
+    Create an instance of the SQLAlchemy model
+    ReceiptCreate for data input validation when creating new receipts (via POST).
+    
+    The receipt parameter is coming from the request body, 
+    and FastAPI is automatically validating and parsing it as an instance 
+    of the ReceiptCreate Pydantic model.
+
+    Pydantic Model (ReceiptCreate): The receipt is expected to match the structure 
+    of the ReceiptCreate class, which is defined in schemas.py.
+    This Pydantic model is used to validate and parse the incoming request data
+    (like title, photo, ingredients, etc.).
+
+    Request Body Parsing: When a client makes a POST request to this endpoint,
+    the data in the request body (usually in JSON format) is automatically
+    parsed by FastAPI into an instance of the ReceiptCreate model. 
+    FastAPI does this by inspecting the type hint (ReceiptCreate) in the function definition.
+
+    In the request body, the receipt parameter will appear as a JSON object 
+    that matches the structure defined in the ReceiptCreate Pydantic model.
+    When a client sends a POST request to the  /receipts/ endpoint, they will provide the data in this format.
+
+    When a Pydantic model as a function parameter, the data comes from the body of the request. 
+    Pydantic models (like ReceiptCreate) are automatically interpreted as request body inputs by FastAPI.
+    When a Pydantic model is used in an endpoint function parameter, 
+    FastAPI knows to expect that the client will send this data in the body of the request as JSON.
+
+    """
     db_receipt = models.Receipt(
         title=receipt.title,
         photo_url=receipt.photo_url,
