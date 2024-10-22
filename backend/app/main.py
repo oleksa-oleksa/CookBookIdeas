@@ -6,8 +6,19 @@ from app.schemas import ReceiptCreate
 from app.models import Receipt
 from app.database import get_db
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
+from app.helpers.utils import scale_ingredients
 
 app = FastAPI()
+
+# Allow CORS for Angular's development server (localhost:4200)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # List the allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Create the database tables when the application starts if they don't exist.
 models.Base.metadata.create_all(bind=database.engine)

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from app.database import Base
+from sqlalchemy.dialects.postgresql import JSON
 
 class Receipt(Base):
     """
@@ -25,9 +26,10 @@ class Receipt(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     photo_url = Column(String, nullable=True)
-    ingredients = Column(ARRAY(String))
+    ingredients = Column(JSON),
     preparation_steps = Column(Text)
     tags = Column(ARRAY(String))
     date_added = Column(Date)
     date_cooked = Column(Date, nullable=True)
     rating = Column(Integer, nullable=True)
+    default_servings = Column(Integer, nullable=False) 

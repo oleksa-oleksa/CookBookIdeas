@@ -13,6 +13,7 @@ def add_sample_receipts():
 
     try:
         sample_receipts = [
+            
             Receipt(
                 title="Lachsfilet mit Salsa",
                 photo_url="https://images.eatsmarter.de/sites/default/files/styles/576x432-webp/public/lachs-mit-avocado-tomaten-salsa-102975.jpg",

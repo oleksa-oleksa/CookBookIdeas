@@ -1,6 +1,12 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
+from typing import List, Dict
+
+class Ingredient(BaseModel):
+    amount: float
+    unit: str
+    ingredient: str
 
 class Receipt(BaseModel):
     """
@@ -20,16 +26,16 @@ class Receipt(BaseModel):
     id: int
     title: str
     photo_url: Optional[str]
-    ingredients: List[str]
+    ingredients: List[Ingredient]
     preparation_steps: str
     tags: List[str]
     date_added: date
     date_cooked: Optional[date]
     rating: Optional[int]
+    default_servings = Optional[int]
 
     class Config:
         from_attributes = True  # Replace orm_mode with from_attributes
-
 
 class ReceiptCreate(BaseModel):
     """
@@ -39,12 +45,13 @@ class ReceiptCreate(BaseModel):
     """
     title: str
     photo_url: Optional[str]
-    ingredients: List[str]
+    ingredients: List[Ingredient]
     preparation_steps: str
     tags: List[str]
     date_added: date
     date_cooked: Optional[date]
     rating: Optional[int]
+    default_servings = Optional[int]
 
     class Config:
         from_attributes = True
