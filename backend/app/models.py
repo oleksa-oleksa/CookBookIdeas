@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Date, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from app.database import Base
 from sqlalchemy.dialects.postgresql import JSON
+from typing import List, Optional
 
 class Receipt(Base):
     """

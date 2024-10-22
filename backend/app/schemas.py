@@ -16,9 +16,9 @@ class UnitEnum(str, Enum):
     none = "none"  # For ingredients like salt, pepper, etc.
 
 class Ingredient(BaseModel):
-    amount: float
-    unit: UnitEnum = UnitEnum.gram  # Default is 'gram'
-    ingredient: str
+    name: str
+    amount: Optional[float]  # Amount can be None for items like salt, pepper
+    unit: Optional[UnitEnum]
 
 
 class Receipt(BaseModel):

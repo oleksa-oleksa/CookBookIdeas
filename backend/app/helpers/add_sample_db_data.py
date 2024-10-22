@@ -46,7 +46,7 @@ def add_sample_receipts():
                 ingredients=[
                     {"name": "kräftige Rinderbrühe", "amount": 4, "unit": UnitEnum.liter},
                     {"name": "Rindfleisch", "amount": 100, "unit": UnitEnum.gram},
-                    {"name": "Knoblauch", "amount": 6, "unit": "Stuck"},
+                    {"name": "Knoblauch", "amount": 6, "unit": UnitEnum.piece},
                     {"name": "Reisnudeln", "amount": 600, "unit": UnitEnum.gram},
                     {"name": "Koriander", "amount": 1, "unit": UnitEnum.bunch},
                     {"name": "Thai Basilikum", "amount": 1, "unit": UnitEnum.bunch},
