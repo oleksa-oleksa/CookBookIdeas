@@ -2,11 +2,24 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
 from typing import List, Dict
+from enum import Enum
+from typing import ClassVar
+
+class UnitEnum(str, Enum):
+    gram = "Gramm"
+    kilogram = "Kilogramm"
+    liter = "Liter"
+    tablespoon = "EL"
+    teaspoon = "TL"
+    piece = "Stück"
+    bunch = "Bund"
+    none = "none"  # For ingredients like salt, pepper, etc.
 
 class Ingredient(BaseModel):
     amount: float
-    unit: str
+    unit: UnitEnum = UnitEnum.gram  # Default is 'gram'
     ingredient: str
+
 
 class Receipt(BaseModel):
     """
@@ -27,12 +40,12 @@ class Receipt(BaseModel):
     title: str
     photo_url: Optional[str]
     ingredients: List[Ingredient]
-    preparation_steps: str
+    preparation_steps: List[str]
     tags: List[str]
     date_added: date
     date_cooked: Optional[date]
     rating: Optional[int]
-    default_servings = Optional[int]
+    default_servings: ClassVar[Optional[int]] = None  # Mark as a class variable
 
     class Config:
         from_attributes = True  # Replace orm_mode with from_attributes
@@ -46,12 +59,12 @@ class ReceiptCreate(BaseModel):
     title: str
     photo_url: Optional[str]
     ingredients: List[Ingredient]
-    preparation_steps: str
+    preparation_steps: List[str]
     tags: List[str]
     date_added: date
     date_cooked: Optional[date]
     rating: Optional[int]
-    default_servings = Optional[int]
+    default_servings: ClassVar[Optional[int]] = None  # Mark as a class variable
 
     class Config:
         from_attributes = True

@@ -26,8 +26,8 @@ class Receipt(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     photo_url = Column(String, nullable=True)
-    ingredients = Column(JSON),
-    preparation_steps = Column(Text)
+    ingredients = Column(JSON)
+    preparation_steps = Column(ARRAY(String))  # Store each step as a separate string
     tags = Column(ARRAY(String))
     date_added = Column(Date)
     date_cooked = Column(Date, nullable=True)
