@@ -1,0 +1,23 @@
+<div *ngFor="let receipt of receipts" class="receipt-card">
+    <h2>{{ receipt.title }}</h2>
+    <img [src]="receipt.photo_url" alt="{{ receipt.title }}" />
+    
+    <h3>Ingredients:</h3>
+    <ul>
+      <li *ngFor="let ingredient of receipt.ingredients">
+          {{ ingredient.amount }} {{ ingredient.unit ? ingredient.unit : ' ' }} {{ ingredient.name }}
+      </li>
+    </ul>
+    
+    <h3>Preparation Steps:</h3>
+    <ol> <!-- Changed to <ol> for ordered steps -->
+      <li *ngFor="let step of receipt.preparation_steps">{{ step }}</li>
+    </ol>
+    
+    <h4>Tags:</h4>
+    <span *ngFor="let tag of receipt.tags">{{ tag }} </span>
+    
+    <p>Date Added: {{ receipt.date_added }}</p>
+    <p>Date Cooked: {{ receipt.date_cooked }}</p>
+    <p>Rating: {{ receipt.rating }}</p>
+</div>
