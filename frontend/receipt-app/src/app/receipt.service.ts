@@ -7,11 +7,17 @@ import { Receipt } from './receipt.model';
   providedIn: 'root'
 })
 export class ReceiptService {
-  private apiUrl = 'http://127.0.0.1:8000/receipts/';
+  private apiUrl = 'http://127.0.0.1:8000/receipts_with_tag/';
 
   constructor(private http: HttpClient) {}
 
   getReceipts(): Observable<Receipt[]> {
     return this.http.get<Receipt[]>(this.apiUrl);
   }
+
+  getReceiptsByTag(tag: string): Observable<Receipt[]> {
+    const url = `${this.apiUrl}?tag=${tag}`;
+    return this.http.get<Receipt[]>(url);
+  }
+
 }

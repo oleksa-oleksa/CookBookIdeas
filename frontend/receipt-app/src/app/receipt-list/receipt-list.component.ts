@@ -30,5 +30,18 @@ export class ReceiptListComponent implements OnInit {
       }
     });
   }
+
+  isLastTag(receipt: Receipt, tag: string): boolean {
+    return receipt.tags[receipt.tags.length - 1] === tag;
+  }
+
+  filterByTag(tag: string): void {
+    this.receiptService.getReceiptsByTag(tag).subscribe(receipts => {
+      this.receipts = receipts;
+    });
+  }
+
+  
+  
 }
 

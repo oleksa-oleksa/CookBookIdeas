@@ -15,7 +15,14 @@
     </ol>
     
     <h4>Tags:</h4>
-    <span *ngFor="let tag of receipt.tags">{{ tag }} </span>
+    <span *ngFor="let tag of receipt.tags; let i = index">
+      <span 
+        (click)="filterByTag(tag)" 
+        style="cursor: pointer; font-weight: bold; text-decoration: underline;">
+        {{ tag }}<ng-container *ngIf="i < receipt.tags.length - 1">,</ng-container>
+      </span>
+    </span>
+    
     
     <p>Date Added: {{ receipt.date_added }}</p>
     <p>Date Cooked: {{ receipt.date_cooked }}</p>

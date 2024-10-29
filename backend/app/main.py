@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import models, database, schemas
@@ -85,6 +85,15 @@ def read_receipts(skip: int = 0, limit: int = 10, db: Session = Depends(database
 
     # Return the queried result (FastAPI will use the Pydantic model for response)
     return receipts
+
+@app.get("/receipts_with_tag", response_model=List[schemas.Receipt])
+def get_receipts(skip: int = 0, limit: int = 10,tag: Optional[str] = None, db: Session = Depends(database.get_db)):
+    
+    if tag:
+        return db.query(models.Receipt).filter(Receipt.tags.contains([tag])).offset(skip).limit(limit).all()
+    
+    return db.query(models.Receipt).offset(skip).limit(limit).all()
+
 
 @app.put("/receipts/{receipt_id}/cooked")
 def mark_as_cooked(receipt_id: int, db: Session = Depends(get_db)):
