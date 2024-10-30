@@ -1,0 +1,38 @@
+<h2>Add New Receipt</h2>
+<form [formGroup]="receiptForm" (ngSubmit)="onSubmit()" class="receipt-form">
+  <label for="title">Title:</label>
+  <input id="title" formControlName="title" required />
+
+  <label for="photo_url">Photo URL:</label>
+  <input id="photo_url" formControlName="photo_url" />
+
+  <label>Ingredients:</label>
+  <div formArrayName="ingredients">
+    <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i" class="ingredient-group">
+      <input placeholder="Ingredient Name" formControlName="name" required />
+      <input placeholder="Amount" type="number" formControlName="amount" />
+      <select formControlName="unit">
+        <option *ngFor="let unit of unitOptions" [value]="unit">{{ unit }}</option>
+      </select>
+      <button type="button" (click)="removeIngredient(i)">Remove</button>
+    </div>
+    <button type="button" (click)="addIngredient()">Add Ingredient</button>
+  </div>
+
+  <label for="preparation_steps">Preparation Steps:</label>
+  <textarea id="preparation_steps" formControlName="preparation_steps"></textarea>
+
+  <label for="tags">Tags:</label>
+  <input id="tags" formControlName="tags" />
+
+  <label for="date_added">Date Added:</label>
+  <input id="date_added" type="date" formControlName="date_added" />
+
+  <label for="date_cooked">Date Cooked:</label>
+  <input id="date_cooked" type="date" formControlName="date_cooked" />
+
+  <label for="rating">Rating:</label>
+  <input id="rating" type="number" formControlName="rating" min="0" max="5" />
+
+  <button type="submit">Submit</button>
+</form>

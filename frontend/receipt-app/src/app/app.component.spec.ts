@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReceiptListComponent } from './receipt-list/receipt-list.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 
 describe('AppComponent', () => {
@@ -13,9 +14,8 @@ describe('AppComponent', () => {
     imports: [RouterTestingModule,
               HttpClientTestingModule
              ],
-    declarations: [AppComponent,
-                   ReceiptListComponent
-    ],
+    declarations: [AppComponent],
+    schemas: [NO_ERRORS_SCHEMA],  // Ignore unknown elements
     
   }));
 

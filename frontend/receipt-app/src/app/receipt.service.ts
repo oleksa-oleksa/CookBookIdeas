@@ -20,4 +20,8 @@ export class ReceiptService {
     return this.http.get<Receipt[]>(url);
   }
 
+  createReceipt(newReceipt: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, newReceipt);
+  }
+
 }
