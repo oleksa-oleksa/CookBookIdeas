@@ -25,14 +25,28 @@
   <label for="tags">Tags:</label>
   <input id="tags" formControlName="tags" />
 
-  <label for="date_added">Date Added:</label>
-  <input id="date_added" type="date" formControlName="date_added" />
+  <div>
+    <label for="date_added">Date Added:</label>
+    <input type="date" formControlName="date_added" id="date_added">
+  </div>
 
-  <label for="date_cooked">Date Cooked:</label>
-  <input id="date_cooked" type="date" formControlName="date_cooked" />
+  <div>
+    <label for="date_cooked">Date Cooked:</label>
+    <input
+      type="date"
+      formControlName="date_cooked"
+      id="date_cooked"
+      placeholder="Not cooked yet"  
+      >
+  </div>
+
 
   <label for="rating">Rating:</label>
   <input id="rating" type="number" formControlName="rating" min="0" max="5" />
 
-  <button type="submit">Submit</button>
+  <div *ngIf="formErrors.length > 0" class="form-errors">
+    <p *ngFor="let error of formErrors" class="error-message">{{ error }}</p>
+  </div>
+
+  <button type="submit">Add Receipt</button>
 </form>

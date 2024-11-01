@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UnitEnum } from 'src/shared/unit-enum';
 import {ReceiptService } from '../receipt.service';
-
+import { formatDate } from '@angular/common';
+import { Ingredient } from '../receipt.model';
 
 /** By creating a dedicated component, AddReceiptComponent, for adding new receipts,
  * the app modular is kept and focused on single responsibilities. 
@@ -46,28 +47,38 @@ import {ReceiptService } from '../receipt.service';
   styleUrls: ['./add-receipt.component.css']
 })
 export class AddReceiptComponent implements OnInit {
-  receiptForm: FormGroup;
+  receiptForm!: FormGroup;
+  formErrors: string[] = [];
   unitOptions = Object.values(UnitEnum);  // Extracts UnitEnum values
 
   constructor(
     private fb: FormBuilder,
     private receiptService: ReceiptService,
     private router: Router
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    const today = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+
     this.receiptForm = this.fb.group({
       title: ['', Validators.required],
-      photo_url: [''],
-      ingredients: this.fb.array([]), // FormArray for ingredients
-      preparation_steps: [''],
+      photo_url: ['', Validators.required],
+      ingredients: this.fb.array([this.createIngredientFormGroup()]),  // Initialize with one ingredient
+      preparation_steps: ['', Validators.required],
       tags: [''],
-      date_added: [''],
+      date_added: [today],  // Default to today's date
       date_cooked: [''],
-      rating: [0]
+      rating: [null]
     });
   }
 
-  ngOnInit(): void {
-    this.addIngredient();  // Start with one ingredient row by default
+  // Helper method to create ingredient FormGroup
+  createIngredientFormGroup(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      amount: [null, Validators.required],
+      unit: [UnitEnum.gram]  // Default to gram
+    });
   }
 
   get ingredients(): FormArray {
@@ -75,12 +86,7 @@ export class AddReceiptComponent implements OnInit {
   }
 
   addIngredient(): void {
-    const ingredientGroup = this.fb.group({
-      name: ['', Validators.required],
-      amount: [null],  // Optional for items like salt/pepper
-      unit: ['none']  // Default unit as 'none'
-    });
-    this.ingredients.push(ingredientGroup);
+    this.ingredients.push(this.createIngredientFormGroup());
   }
 
   removeIngredient(index: number): void {
@@ -88,10 +94,46 @@ export class AddReceiptComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Debug
+    console.log('Form Data:', this.receiptForm.value);
+  
+    this.formErrors = [];
     if (this.receiptForm.valid) {
-      this.receiptService.createReceipt(this.receiptForm.value).subscribe({
+      const newReceipt = {
+        title: this.receiptForm.get('title')?.value,
+        photo_url: this.receiptForm.get('photo_url')?.value,
+        ingredients: this.receiptForm.value.ingredients.map((ingredient: Ingredient) => ({
+          name: ingredient.name,
+          amount: ingredient.amount,
+          unit: ingredient.unit,
+      })),
+        preparation_steps: this.receiptForm.value.preparation_steps.split('\n').map((step: string) => step.trim()),
+        tags: this.receiptForm.value.tags.split(',').map((tag: string) => tag.trim()),
+        date_added: this.receiptForm.get('date_added')?.value,
+        date_cooked: this.receiptForm.value.date_cooked || null,
+        rating: this.receiptForm.get('rating')?.value,
+      };
+
+      this.receiptService.createReceipt(newReceipt).subscribe({
         next: () => this.router.navigate(['/receipts']),
-        error: (error) => console.error('Error creating receipt', error)
+        error: (error) => {
+          console.error('Error creating receipt', error);
+        }
+      });
+    } else {
+      Object.keys(this.receiptForm.controls).forEach(controlName => {
+        const control = this.receiptForm.get(controlName);
+        if (control && control.invalid) {
+          Object.keys(control.errors || {}).forEach(errorKey => {
+            switch (errorKey) {
+              case 'required':
+                this.formErrors.push(`The ${controlName} field is required.`);
+                break;
+              default:
+                this.formErrors.push(`The ${controlName} field has an error.`);
+            }
+          });
+        }
       });
     }
   }

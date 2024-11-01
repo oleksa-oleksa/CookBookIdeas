@@ -86,3 +86,13 @@ form {
     }
   }
   
+  .form-errors {
+    margin-top: 10px;
+    color: red;
+    font-size: 0.9em;
+  }
+  
+  .error-message {
+    margin: 2px 0;
+  }
+  

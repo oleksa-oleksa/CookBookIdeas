@@ -11,12 +11,18 @@ from app.helpers.utils import scale_ingredients
 
 app = FastAPI()
 
-# Allow CORS for Angular's development server (localhost:4200)
+# Define allowed origins
+origins = [
+    "http://localhost:4200",  # Allow your Angular app to access the backend
+    # Add any other origins as needed
+]
+
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # List the allowed origins
+    allow_origins=origins,  # Specifies allowed origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, etc.)
+    allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
 )
 
@@ -32,7 +38,7 @@ def get_db():
         db.close()
 
 @app.post("/receipts/")
-def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
+async def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
     """
     Create an instance of the SQLAlchemy model
     ReceiptCreate for data input validation when creating new receipts (via POST).
@@ -61,23 +67,34 @@ def create_receipt(receipt: ReceiptCreate, db: Session = Depends(get_db)):
     FastAPI knows to expect that the client will send this data in the body of the request as JSON.
 
     """
-    db_receipt = models.Receipt(
-        title=receipt.title,
-        photo_url=receipt.photo_url,
-        ingredients=receipt.ingredients,
-        preparation_steps=receipt.preparation_steps,
-        tags=receipt.tags,
-        date_added=receipt.date_added,
-        date_cooked=receipt.date_cooked,
-        rating=receipt.rating
-    )
+    try:
+        # Convert ingredients to a list of dictionaries if required for JSON storage
+        ingredients_data = [
+            {"name": ingredient.name, "amount": ingredient.amount, "unit": ingredient.unit.value} 
+            for ingredient in receipt.ingredients
+        ]
+        
+        new_receipt = Receipt(
+            title=receipt.title,
+            photo_url=receipt.photo_url,
+            ingredients=ingredients_data,
+            preparation_steps=receipt.preparation_steps,
+            tags=receipt.tags,
+            date_added=receipt.date_added,
+            date_cooked=receipt.date_cooked,
+            rating=receipt.rating,
+            default_servings=receipt.default_servings if receipt.default_servings is not None else 1  # Set a default value
+        )
+        
+        db.add(new_receipt)
+        db.commit()
+        db.refresh(new_receipt)
+        return new_receipt
     
-    db.add(db_receipt)
-    db.commit()
-    db.refresh(db_receipt)
-    return db_receipt
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-
+"""
 @app.get("/receipts/", response_model=List[schemas.Receipt])
 def read_receipts(skip: int = 0, limit: int = 10, db: Session = Depends(database.get_db)):
     # Query the SQLAlchemy model from the database
@@ -85,12 +102,13 @@ def read_receipts(skip: int = 0, limit: int = 10, db: Session = Depends(database
 
     # Return the queried result (FastAPI will use the Pydantic model for response)
     return receipts
+"""
 
-@app.get("/receipts_with_tag", response_model=List[schemas.Receipt])
+@app.get("/receipts/", response_model=List[schemas.Receipt])
 def get_receipts(skip: int = 0, limit: int = 10,tag: Optional[str] = None, db: Session = Depends(database.get_db)):
     
     if tag:
-        return db.query(models.Receipt).filter(Receipt.tags.contains([tag])).offset(skip).limit(limit).all()
+        return db.query(models.Receipt).filter(models.Receipt.tags.contains([tag])).offset(skip).limit(limit).all()
     
     return db.query(models.Receipt).offset(skip).limit(limit).all()
 
