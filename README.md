@@ -7,7 +7,7 @@ Frontend: An Angular app that allows users to interact with the data, create new
 # Backend (FastAPI)
 The backend is built with FastAPI, a Python web framework optimized for building APIs quickly and efficiently. The primary functions include:
 
-## API Endpoints: The FastAPI server exposes RESTful endpoints for creating, retrieving, updating, and deleting recipes. Endpoints include:
+<b> API Endpoints:</b> The FastAPI server exposes RESTful endpoints for creating, retrieving, updating, and deleting recipes. Endpoints include:
 
 POST /receipts/: Adds a new recipe to the database.
 GET /receipts/: Retrieves all recipes.
