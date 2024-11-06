@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors} from '@angular/forms';
 import { Router } from '@angular/router';
 import { UnitEnum } from 'src/shared/unit-enum';
 import {ReceiptService } from '../receipt.service';
@@ -63,7 +63,9 @@ export class AddReceiptComponent implements OnInit {
     this.receiptForm = this.fb.group({
       title: ['', Validators.required],
       photo_url: ['', Validators.required],
-      ingredients: this.fb.array([this.createIngredientFormGroup()]),  // Initialize with one ingredient
+      ingredients: this.fb.array([
+        this.createIngredient()
+      ]),
       preparation_steps: ['', Validators.required],
       tags: [''],
       date_added: [today],  // Default to today's date
@@ -72,12 +74,17 @@ export class AddReceiptComponent implements OnInit {
     });
   }
 
-  // Helper method to create ingredient FormGroup
-  createIngredientFormGroup(): FormGroup {
+  // Custom numeric validator to accept only integers or floats
+  private numericValidator(control: AbstractControl): ValidationErrors | null {
+    const valid = /^-?\d*\.?\d*$/.test(control.value); // Regex for integers and decimals
+    return valid ? null : { numeric: { value: control.value } };
+  }
+
+  createIngredient(): FormGroup {
     return this.fb.group({
       name: ['', Validators.required],
-      amount: [null, Validators.required],
-      unit: [UnitEnum.gram]  // Default to gram
+      amount: ['', [this.numericValidator]], // Use numericValidator as a synchronous validator
+      unit: ['Gramm']
     });
   }
 
@@ -86,7 +93,8 @@ export class AddReceiptComponent implements OnInit {
   }
 
   addIngredient(): void {
-    this.ingredients.push(this.createIngredientFormGroup());
+    this.ingredients.push(this.createIngredient());
+
   }
 
   removeIngredient(index: number): void {

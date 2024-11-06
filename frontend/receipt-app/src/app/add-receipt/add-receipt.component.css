@@ -33,7 +33,7 @@ form {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid #000000;
     border-radius: 4px;
     font-size: 1rem;
     color: #333;
@@ -48,12 +48,13 @@ form {
   textarea:focus {
     border-color: #007BFF;
     outline: none;
+    border: 2px solid #007BFF;
   }
   
   /* Textarea height */
   textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 150px;
   }
   
   /* Button styling */
@@ -78,7 +79,7 @@ form {
     background-color: #ccc;
     cursor: not-allowed;
   }
-  
+
   /* Responsive adjustments */
   @media (max-width: 600px) {
     form {
@@ -95,4 +96,61 @@ form {
   .error-message {
     margin: 2px 0;
   }
+
+  .ingredient-group {
+    display: flex;
+    gap: 10px; /* Space between each field */
+    align-items: center;
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
   
+  .ingredient-name {
+    flex: 1; /* Makes the name field take up remaining space */
+  }
+  
+  .ingredient-amount {
+    width: 100px; /* Fixed width for the amount field */
+  }
+  
+  .ingredient-unit {
+    width: 120px; /* Adjust width for the unit dropdown */
+  }
+
+  .standart-input {
+    display: flex;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .add-ingredient-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-ingredient-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .remove-btn {
+    padding: 3px 20px;
+    font-weight: bold;
+    color: #000;
+    background-color: #ffcccc;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: auto;
+  }
+
+  .remove-btn:hover {
+    background-color: #ffe6e6;
+  }
